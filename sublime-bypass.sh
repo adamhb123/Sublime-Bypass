@@ -9,9 +9,15 @@ RED="\x1B[31m"
 RST="\x1B[0m"
 inputMerge=merge
 inputText=text
+scriptPath="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
+
 
 printf "\nSublime-Bypass v2\n\n"
-printf "${RED}Before you start, make sure you HAVE modified your /etc/hosts file as specified earlier.\n\n${RST}"
+if ! $scriptPath/.hosts.sh add; then
+	printf "${RED}Failed to modify hosts file. Please run the script with sudo or as root.${RST}\n"
+	exit 1
+fi
+
 printf "Please enter the Sublime product you're trying to crack [merge/text]\n>"
 read inputUser
 
@@ -41,5 +47,5 @@ then
 	printf '\xC3'                             | dd of=sublime_merge bs=1 seek=$((0x003C572C)) conv=notrunc
 	printf "License checks for Sublime Merge have been Disabled"
 else
-	printf "Huh, It seems you entered something other than merge or text. Try re-running this program and specify the proper product.\n"
+	printf "You entered something other than merge or text. Re-run the program and specify the proper product.\n"
 fi
